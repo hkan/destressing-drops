@@ -5,16 +5,30 @@ const renderer = require('./renderer')
 const scene = require('./scene')
 const camera = require('./camera')
 const RingManager = require('./ringManager')(scene)
-const RainDrop = require('./raindrop')
+const RainDropManager = require('./raindropManager')(scene)
+const audio = new Audio('./drop.wav')
+window.audioOpts = {
+    volume: 0.3
+}
 
 window.events = new EventEmitter()
 
-// Create rings.
-RingManager.make(30)
-
-document.body.addEventListener('click', () => {
+events.on('raindropped', () => {
+    audio.volume = audioOpts.volume
+    audio.currentTime = 0.2
+    audio.play()
+    
     RingManager.bounce()
-}, false)
+})
+
+// Create rings.
+RingManager.make(50)
+
+setTimeout(function dropper() {
+    RainDropManager.make()
+
+    setTimeout(dropper, (Math.random() + .5) * 7000)
+}, 100)
 
 // Start looping thru frames.
 requestAnimationFrame(function loop() {
@@ -23,6 +37,7 @@ requestAnimationFrame(function loop() {
 
     // 
     RingManager.render()
+    RainDropManager.render()
 
     // Render scene.
     renderer.render(scene, camera)

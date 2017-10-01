@@ -20,7 +20,7 @@ const Manager = module.exports = scene => ({
 
     bounce() {
         rings.forEach((ring, index) => {
-            setTimeout(() => ring.bounce(10 * (rings.length - index + 1)), index * 100)
+            setTimeout(() => ring.bounce(6 / (rings.length / (rings.length - index + 1))), index * 120)
         })
     },
     

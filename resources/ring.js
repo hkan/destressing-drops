@@ -1,7 +1,6 @@
 const THREE = require('three')
 
-const accel = 0.2
-const bounceLimit = 10
+const accel = 0.05
 
 const Ring = class Ring {
     constructor(scene, radius) {
@@ -10,10 +9,12 @@ const Ring = class Ring {
         this.position = { x: 0, y: 0, z: 0 }
         this.speedY = 0
         this.accelY = 0
+        this.bounceSpeed = 3
+        this.bounceLimit = 10
         this.bounceInProgress = 0
         this.firstRender = true
         this.material = new THREE.LineDashedMaterial({
-            color: 0x000,
+            color: 0x999999,
             linewidth: 1,
             scale: 1,
             dashSize: 1,
@@ -32,28 +33,34 @@ const Ring = class Ring {
         this.buildMesh()
     }
 
-    bounce() {
+    bounce(limit) {
         if (this.bounceInProgress) {
             return
         }
+
+        if (limit) {
+            this.bounceLimit = limit
+        }
+
+        this.bounceSpeed = limit * 0.2
         
         this.bounceInProgress = 1
-        this.speedY = 3
+        this.speedY = this.bounceSpeed
     }
 
     move() {
         if (this.bounceInProgress == 1) {
-            this.accelY = accel
+            this.accelY = (this.position.y < -this.bounceLimit / 2 ? -.7 : 1) * accel
 
-            if (this.position.y > bounceLimit) {
+            if (this.position.y > this.bounceLimit) {
                 this.bounceInProgress = 2
             }
         }
 
         if (this.bounceInProgress == 2) {
-            this.accelY = -accel
+            this.accelY = (this.position.y > this.bounceLimit / 2 ? -1 : .75) * accel
 
-            if (this.position.y < -bounceLimit) {
+            if (this.position.y < -this.bounceLimit) {
                 this.bounceInProgress = 3
             }
         }
