@@ -1,6 +1,6 @@
 {
     "name": "destressing-drops",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "scripts": {
         "watch": "watchify -vd -p browserify-reload -e resources/app.js -o www/build/app.js",
         "build": "browserify resources/app.js -o www/build/app.js",
