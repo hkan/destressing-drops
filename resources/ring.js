@@ -31,17 +31,6 @@ const Ring = class Ring {
             this.scene.remove(this.mesh)
         }
 
-        if (this.speedY == 0 || this.position.y > 30) {
-            this.speedY = -1
-        }
-
-        if (this.position.y < -30) {
-            this.speedY = 1
-        }
-
-        this.position.y += this.speedY
-        Object.assign(this.mesh.position, this.position)
-
         this.scene.add(this.mesh)
         this.firstRender = false
     }
