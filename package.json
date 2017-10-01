@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "watch": "watchify -vd -p browserify-reload -e resources/app.js -o www/build/app.js",
+        "build": "browserify resources/app.js -o www/build/app.js",
         "serve": "http-server ./www"
     },
     "browserify": {
