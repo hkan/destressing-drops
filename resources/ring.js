@@ -1,5 +1,7 @@
 const THREE = require('three')
-let rings = []
+
+const accel = 0.2
+const bounceLimit = 10
 
 const Ring = class Ring {
     constructor(scene, radius) {
@@ -7,6 +9,8 @@ const Ring = class Ring {
         this.radius = radius
         this.position = { x: 0, y: 0, z: 0 }
         this.speedY = 0
+        this.accelY = 0
+        this.bounceInProgress = 0
         this.firstRender = true
         this.material = new THREE.LineDashedMaterial({
             color: 0x000,
@@ -17,6 +21,8 @@ const Ring = class Ring {
             side: THREE.DoubleSide,
         })
 
+        setInterval(this.move.bind(this), 1000/60)
+        
         this.build()
         this.render()
     }
@@ -26,13 +32,59 @@ const Ring = class Ring {
         this.buildMesh()
     }
 
+    bounce() {
+        if (this.bounceInProgress) {
+            return
+        }
+        
+        this.bounceInProgress = 1
+        this.speedY = 3
+    }
+
+    move() {
+        if (this.bounceInProgress == 1) {
+            this.accelY = accel
+
+            if (this.position.y > bounceLimit) {
+                this.bounceInProgress = 2
+            }
+        }
+
+        if (this.bounceInProgress == 2) {
+            this.accelY = -accel
+
+            if (this.position.y < -bounceLimit) {
+                this.bounceInProgress = 3
+            }
+        }
+
+        if (this.bounceInProgress == 3) {
+            this.accelY = accel
+
+            if (this.position.y > 0) {
+                this.bounceInProgress = 0
+                this.position.y = 0
+                this.accelY = 0
+                this.speedY = 0
+            }
+        }
+
+        this.speedY += this.accelY
+        this.position.y += this.speedY
+    }
+
     render() {
         if (!this.firstRender) {
             this.scene.remove(this.mesh)
         }
 
+        this.mesh.position.y = this.position.y
         this.scene.add(this.mesh)
         this.firstRender = false
+    }
+
+    remove() {
+        this.scene.remove(this.mesh)
     }
 
     buildGeometry() {
@@ -46,18 +98,4 @@ const Ring = class Ring {
     }
 }
 
-module.exports = {
-    make(scene) {
-        rings = require('lodash/range')(10, 150, 5).map((radius, index) => {
-            let ring = new Ring(scene, radius)
-
-            ring.position.y = index
-            
-            return ring
-        })
-    },
-
-    render() {
-        rings.forEach(ring => ring.render())
-    }
-}
+module.exports = Ring

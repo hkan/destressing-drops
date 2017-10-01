@@ -1,6 +1,6 @@
 const THREE = require('three')
 
-const Ball = class Ball {
+const RainDrop = class RainDrop {
     constructor() {
         this.position = {x: 0, y: -500, z: 0}
         this.geometry = new THREE.SphereGeometry(5, 32, 32)
@@ -27,4 +27,4 @@ const Ball = class Ball {
     }
 }
 
-module.exports = Ball
+module.exports = RainDrop

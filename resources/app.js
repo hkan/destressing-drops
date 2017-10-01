@@ -1,36 +1,32 @@
 const T = require('three')
 
+const EventEmitter = require('events')
 const renderer = require('./renderer')
 const scene = require('./scene')
 const camera = require('./camera')
-const Rings = require('./ring')
-const Ball = require('./ball')
-let ball
+const RingManager = require('./ringManager')(scene)
+const RainDrop = require('./raindrop')
 
-Rings.make(scene)
+window.events = new EventEmitter()
 
-document.body.appendChild(renderer.domElement)
+// Create rings.
+RingManager.make(30)
 
 document.body.addEventListener('click', () => {
-    if (ball) {
-        scene.remove(ball.mesh)
-    }
-
-    ball = new Ball()
-    ball.render()
-
-    scene.add(ball.mesh)
+    RingManager.bounce()
 }, false)
 
+// Start looping thru frames.
 requestAnimationFrame(function loop() {
+    // Request new frame.
     requestAnimationFrame(loop)
 
-    if (ball) {
-        scene.remove(ball.mesh)
-        ball.render()
-        scene.add(ball.mesh)
-    }
+    // 
+    RingManager.render()
 
-    Rings.render()
+    // Render scene.
     renderer.render(scene, camera)
 })
+
+// Insert DOM element into the page.
+document.body.appendChild(renderer.domElement)
