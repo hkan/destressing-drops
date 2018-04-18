@@ -4,7 +4,7 @@ Quick prototype of a simple semi-interactive HTML5 Canvas project inspired by [t
 
 ## Demo
 
-http://82.196.10.19:8081
+https://hkan.github.io/destressing-drops/
 
 ## Building
 
